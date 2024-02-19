@@ -1,0 +1,33 @@
+version: "2"
+name: "Forge"
+description: "Provides insights based on customer feedback"
+
+# This is the name displayed in DevRev where the Snap-In takes actions using the token of this service account.
+service_account:
+  display_name: Forge Snap-in
+
+commands:
+  - name: product_review
+    namespace: forge
+    description: Generates insights from multiple voice channels for given product
+    surfaces:
+      - surface: discussions
+        object_types:
+          - snap_in
+    usage_hint: "/product_review [name of the product]"
+    function: product_review
+  - name: help
+    namespace: forge
+    description: Details on available slash commands
+    surfaces:
+      - surface: discussions
+        object_types:
+          - snap_in
+    usage_hint: "/help"
+    function: help
+
+functions:
+  - name: product_review
+    description: Generates insights from multiple voice channels for given product and creates tickets for each insight
+  - name: help
+    description: Function to return help details
