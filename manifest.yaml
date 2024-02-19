@@ -25,9 +25,20 @@ commands:
           - snap_in
     usage_hint: "/help"
     function: help
+  - name: company_review
+    namespace: forge
+    description: Generates insights from multiple voice channels for given company
+    surfaces:
+      - surface: discussions
+        object_types:
+          - snap_in
+    usage_hint: "/company_review [name of the company]"
+    function: company_review
 
 functions:
   - name: product_review
     description: Generates insights from multiple voice channels for given product and creates tickets for each insight
   - name: help
     description: Function to return help details
+  - name: company_review
+    description: Generates insights from multiple voice channels for given company and creates tickets for each insight
