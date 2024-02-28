@@ -1,10 +1,28 @@
 version: "2"
-name: "Forge"
+name: "Insightify"
 description: "Provides insights based on customer feedback"
 
 # This is the name displayed in DevRev where the Snap-In takes actions using the token of this service account.
 service_account:
-  display_name: Forge Snap-in
+  display_name: Insightify Snap-in
+
+keyrings:
+  organization:
+    - name: twitter_api_key
+      description: API Key for Twitter API.
+      types:
+        - snap_in_secret
+      display_name: Twitter API Key
+    - name: hf_api_key
+      description: API Key for HuggingFace API.
+      types:
+        - snap_in_secret
+      display_name: HuggingFace API Key
+    - name: fireworks_api_key
+      description: API Key for Fireworks API.
+      types:
+        - snap_in_secret
+      display_name: Fireworks API Key
 
 tags:
   - name: test_tag1
@@ -38,7 +56,7 @@ inputs:
 
 commands:
   - name: product_review
-    namespace: forge
+    namespace: insightify
     description: Generates insights from multiple voice channels for given product
     surfaces:
       - surface: discussions
@@ -47,7 +65,7 @@ commands:
     usage_hint: "/product_review [name of the product]"
     function: product_review
   - name: help
-    namespace: forge
+    namespace: insightify
     description: Details on available slash commands
     surfaces:
       - surface: discussions
@@ -56,7 +74,7 @@ commands:
     usage_hint: "/help"
     function: help
   - name: company_review
-    namespace: forge
+    namespace: insightify
     description: Generates insights from multiple voice channels for given company
     surfaces:
       - surface: discussions

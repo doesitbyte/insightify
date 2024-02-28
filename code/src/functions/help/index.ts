@@ -1,5 +1,5 @@
 import { client, publicSDK } from '@devrev/typescript-sdk';
-import { ApiUtils, HTTPResponse } from '../utils';
+import { ApiUtils, HTTPResponse } from '../product_review/utils';
 
 export async function handleEvent(event: any) {
   const devrevPAT = event.context.secrets.service_account_token;
