@@ -6,6 +6,36 @@ description: "Provides insights based on customer feedback"
 service_account:
   display_name: Forge Snap-in
 
+tags:
+  - name: test_tag1
+    description: "This is test tag 1"
+  - name: test_tag2
+    description: "This is test tag 2"
+
+inputs:
+  organization:
+    - name: default_part_id
+      description: "Default part under which to create tickets."
+      field_type: id
+      id_type:
+        - product
+        - capability
+        - feature
+        - enhancement
+      is_required: true
+      default_value: "don:core:dvrv-us-1:devo/xxx:product/xxx"
+      ui:
+        display_name: Default Part
+    - name: default_owner_id
+      description: "Default owner of the tickets."
+      field_type: id
+      id_type:
+        - devu
+      is_required: true
+      default_value: "don:identity:dvrv-us-1:devo/xxx:devu/xxx"
+      ui:
+        display_name: Default Owner
+
 commands:
   - name: product_review
     namespace: forge
