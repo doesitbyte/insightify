@@ -63,7 +63,6 @@ export class LLMUtils {
 
     const result = await response.json();
     const reply = result['choices'][0]['message'];
-    console.log(reply['content']);
 
     const summary = reply['content'];
 
@@ -81,14 +80,14 @@ export class LLMUtils {
     avg_user_following: number,
     avg_views: number
   ) {
-    const prompt = `You are a super talented social media marketing expert. 
-    Your role is to analyse the summary of all the tweets for a particular query and its related twitter metrics
-    After your analysis your role is to provide 5 very factual, specific and actionable insights to improve social media image of the query
+    const prompt = `You are a chatbot capable of analysing and understanding requirements and sending insights on the same. 
+    Your role is to analyse the <Summary for insight> for a particular <Query from user> and its related twitter <Metrics>
+    After your analysis your role is to provide 5 very specific and actionable insights to improve the product of that company based on the <Query from user>
     
-    <Query>
+    <Query from user>
     ${query}
 
-    <Summary>
+    <Summary for insight>
     ${summary}
 
     <Metrics>
@@ -122,7 +121,6 @@ export class LLMUtils {
 
     const result = await response.json();
     const reply = result['choices'][0]['message'];
-    console.log(reply['content']);
 
     const insights = reply['content'];
 
@@ -138,23 +136,18 @@ export class LLMUtils {
     views: number,
     favs: number
   ) {
-    const prompt = `You are a super talented social media marketing expert. 
-    Your role is to analyse the tweet for a particular query and its related twitter metrics
-    After your analysis your role is to provide 2 very factual, specific and actionable insights to improve social media image of the query
-    
-    <Query>
+    const prompt = `You are a chatbot capable of analysing and understanding requirements and sending insights on the same. Your role is to analyze the tweet for a particular <Query from users> and its related Twitter <Metrics> with reference to <Tweet for insight>. After your analysis, your role is to provide 2 very factual, specific, and actionable <Insights> to improve the product image.
+
+    <Query from users>
     ${query}
-
-    <Tweet>
+    <Tweet for insight>
     ${text}
-
     <Metrics>
-    Average Views : ${views}
-    Average Likes : ${favs}
-    Sentiment : ${sentiment}
-    Average Engagement : ${replies}
-    Average User Following of Tweet Author : ${user_following}
-    
+    Average Views: ${views}
+    Average Likes: ${favs}
+    Sentiment: ${sentiment}
+    Average Engagement: ${replies}
+    Average User Following of Tweet Author: ${user_following}
     <Insights>
     `;
 
@@ -179,7 +172,6 @@ export class LLMUtils {
 
     const result = await response.json();
     const reply = result['choices'][0]['message'];
-    console.log(reply['content']);
 
     const insights = reply['content'];
 
@@ -188,7 +180,7 @@ export class LLMUtils {
 
   async detailedInsights(
     query: string,
-    insights: string,
+    summary: string,
     avg_neutrals: number,
     avg_positives: number,
     avg_negatives: number,
@@ -197,15 +189,15 @@ export class LLMUtils {
     avg_user_following: number,
     avg_views: number
   ) {
-    const prompt = `You are a super talented social media marketing expert. 
-    Your role is to analyse the insight for all the tweets for a particular query and its related twitter metrics
-    After your analysis your role is to provide 10 very factual, specific and actionable insights to improve social media image of the query
+    const prompt = `You are a chatbot capable of analysing and understanding requirements and sending insights on the same. 
+    Your role is to analyse the <Summary for insight> for a particular <Query from user> and its related twitter <Metrics>
+    After your analysis your role is to provide 10 very specific and actionable insights to improve the product of that company based on the <Query from user>
     
-    <Query>
+    <Query from user>
     ${query}
 
-    <Insights>
-    ${insights}
+    <Summary for insight>
+    ${summary}
 
     <Metrics>
     Average Views : ${avg_views}
@@ -238,10 +230,18 @@ export class LLMUtils {
 
     const result = await response.json();
     const reply = result['choices'][0]['message'];
-    console.log(reply['content']);
 
     const det_insights = reply['content'];
 
-    return det_insights;
+    let tags = det_insights
+      .split(/\n/)
+      .filter((sentence: string) => sentence.trim() !== '')
+      .slice(1);
+    tags = tags.map((sentence: string) => sentence.replace(/^\d+\.\s?/, '').trim());
+
+    return {
+      det_insights: det_insights,
+      tags: tags,
+    };
   }
 }

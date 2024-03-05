@@ -12,7 +12,6 @@ export async function handleEvent(event: any) {
   const hfApiKey: string = event.input_data.keyrings.hf_api_key;
   const fireWorksApiKey: string = event.input_data.keyrings.fireworks_api_key;
 
-  const tags = event.input_data.resources.tags;
   const inputs = event.input_data.global_values;
 
   const snapInId = event.context.snap_in_id;
@@ -43,9 +42,9 @@ export async function handleEvent(event: any) {
   const twitterData = await twitter_utils.getTweets(product, 100, 5, 5, 10);
   const getInsights = twitterData.map(async (tweet: any) => {
     let tweetText = tweet['text'];
-    let userFollowing = tweet['userFollowing'];
-    let tweetReplies = tweet['reply_count'];
-    let tweetFavs = tweet['favorite_count'];
+    let userFollowing = tweet['user_following'];
+    let tweetReplies = tweet['replies'];
+    let tweetFavs = tweet['favs'];
     let tweetViews = tweet['views'];
 
     const sentiment = await llm_utils.sentimentAnalysis(tweet);
@@ -109,7 +108,7 @@ export async function handleEvent(event: any) {
 
   const detailedInsights = await llm_utils.detailedInsights(
     product,
-    insightsAll,
+    summary,
     avg_neutrals,
     avg_positives,
     avg_negatives,
@@ -119,7 +118,7 @@ export async function handleEvent(event: any) {
     avg_views
   );
 
-  const cleanedDetailedInsights = detailedInsights.replace(/\*\*/g, '');
+  const cleanedDetailedInsights = detailedInsights.det_insights.replace(/\*\*/g, '');
 
   await apiUtil.postTextMessageWithVisibilityTimeout(
     snapInId,
@@ -127,30 +126,25 @@ export async function handleEvent(event: any) {
     1
   );
 
-  const createTicketResp = await apiUtil.createTicket({
-    title: product,
-    tags: [{ id: tags['test_tag1'].id }],
-    body: 'test_body',
-    type: publicSDK.WorkType.Ticket,
-    owned_by: [inputs['default_owner_id']],
-    applies_to_part: inputs['default_part_id'],
+  detailedInsights.tags.map(async (tag: string) => {
+    const createTicketResp = await apiUtil.createTicket({
+      title: `Insight for ${product}`,
+      body: tag,
+      type: publicSDK.WorkType.Ticket,
+      owned_by: [inputs['default_owner_id']],
+      applies_to_part: inputs['default_part_id'],
+    });
+    if (!createTicketResp.success) {
+      console.error(`Error while creating ticket: ${createTicketResp.message}`);
+      return;
+    }
   });
-  if (!createTicketResp.success) {
-    console.error(`Error while creating ticket: ${createTicketResp.message}`);
-    return;
-  }
-  // Post a message with ticket ID.
-  const ticketID = createTicketResp.data.work.id;
-  const ticketCreatedMessage = `Created ticket: <${ticketID}> for product ${product}`;
-  const postTicketResp: HTTPResponse = await apiUtil.postTextMessageWithVisibilityTimeout(
+
+  await apiUtil.postTextMessageWithVisibilityTimeout(
     snapInId,
-    ticketCreatedMessage,
+    `Created tickets for generated insights and assigned them to the selected user.`,
     1
   );
-  if (!postTicketResp.success) {
-    console.error(`Error while creating timeline entry: ${postTicketResp.message}`);
-    return;
-  }
 }
 
 export const run = async (events: any[]) => {

@@ -10,7 +10,13 @@ export async function handleEvent(event: any) {
   let commentID: string | undefined;
 
   // Send a help message in CLI help format.
-  const helpMessage = `help message`;
+  const helpMessage = `Available commands:
+  
+  product_review:
+  
+  syntax: /product_review <product_name>
+  
+  info: gathers twitter data about the product and provides feedback summary, actionable insights and detailed analysis with metrics.`;
   let postResp = await apiUtil.postTextMessageWithVisibilityTimeout(snapInId, helpMessage, 1);
   if (!postResp.success) {
     console.error(`Error while creating timeline entry: ${postResp.message}`);

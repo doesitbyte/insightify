@@ -24,12 +24,6 @@ keyrings:
         - snap_in_secret
       display_name: Fireworks API Key
 
-tags:
-  - name: test_tag1
-    description: "This is test tag 1"
-  - name: test_tag2
-    description: "This is test tag 2"
-
 inputs:
   organization:
     - name: default_part_id
@@ -53,6 +47,34 @@ inputs:
       default_value: "don:identity:dvrv-us-1:devo/xxx:devu/xxx"
       ui:
         display_name: Default Owner
+    - name: minimum_likes
+      description: "Minimum number of likes for extracting a tweet"
+      field_type: int
+      is_required: true
+      default_value: 100
+      ui:
+        display_name: Minimum Likes
+    - name: minimum_retweets
+      description: "Minimum number of rettweets for extracting a tweet"
+      field_type: int
+      is_required: true
+      default_value: 10
+      ui:
+        display_name: Minimum Retweets
+    - name: limit
+      description: "Number of tweets to extract"
+      field_type: int
+      is_required: true
+      default_value: 20
+      ui:
+        display_name: Number of Tweets
+    - name: from_days_ago
+      description: "Maximum number of days back to check for tweets"
+      field_type: int
+      is_required: true
+      default_value: 20
+      ui:
+        display_name: Days Ago
 
 commands:
   - name: product_review
@@ -73,20 +95,9 @@ commands:
           - snap_in
     usage_hint: "/help"
     function: help
-  - name: company_review
-    namespace: insightify
-    description: Generates insights from multiple voice channels for given company
-    surfaces:
-      - surface: discussions
-        object_types:
-          - snap_in
-    usage_hint: "/company_review [name of the company]"
-    function: company_review
 
 functions:
   - name: product_review
     description: Generates insights from multiple voice channels for given product and creates tickets for each insight
   - name: help
     description: Function to return help details
-  - name: company_review
-    description: Generates insights from multiple voice channels for given company and creates tickets for each insight
